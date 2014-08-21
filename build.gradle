@@ -17,7 +17,7 @@ apply plugin: 'maven'
 
 group = 'org.jruyi'
 archivesBaseName = 'thrift-gradle-plugin'
-version = '0.1.0-SNAPSHOT'
+version = '0.1.0'
 description = 'A gradle plugin for compiling Thrift IDL files using thrift compiler'
 
 repositories {
