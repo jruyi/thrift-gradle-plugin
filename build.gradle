@@ -1,0 +1,105 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+group = 'org.jruyi'
+archivesBaseName = 'thrift-gradle-plugin'
+version = '0.1.0-SNAPSHOT'
+description = 'A gradle plugin for compiling Thrift IDL files using thrift compiler'
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	title = 'Thrift Gradle Plugin'
+	organizationId = 'org.jruyi'
+	organizationName = 'JRuyi.org'
+	organizationUrl = 'http://www.jruyi.org/'
+
+	licenseName = 'Apache License, Version 2.0'
+	licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+
+	createdBy = "${System.getProperty('java.version')} (${System.getProperty('java.vm.vendor')})"
+}
+
+configurations.all {
+	transitive = false
+}
+
+dependencies {
+	compile gradleApi()
+	compile localGroovy()
+}
+
+processResources {
+
+	from(['LICENSE', 'NOTICE']) {
+		into 'META-INF'
+	}
+}
+
+compileGroovy {
+	sourceCompatibility = 1.6
+	targetCompatibility = 1.6
+	options.encoding = 'UTF-8'
+}
+
+jar {
+	manifest {
+		attributes(
+				'Specification-Title': title,
+				'Specification-Version': version,
+				'Specification-Vendor': organizationName,
+				'Implementation-Title': title,
+				'Implementation-Version': version,
+				'Implementation-Vendor': organizationName,
+				'Implementation-Vendor-Id': organizationId,
+				'Implementation-Vendor-URL': organizationUrl,
+				'Created-By': createdBy,
+		)
+	}
+}
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: jruyiRepo)
+			pom {
+				name = title
+			}
+			pom.project {
+				url = organizationUrl
+				description = project.description
+				organization {
+					name = organizationName
+					url = organizationUrl
+				}
+				licenses {
+					license {
+						name licenseName
+						url licenseUrl
+						distribution 'repo'
+					}
+				}
+			}
+		}
+	}
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.0'
+}
