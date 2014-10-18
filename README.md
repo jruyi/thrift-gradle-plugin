@@ -8,16 +8,14 @@ To use this plugin, add the following to your build script.
 ```groovy
 buildscript {
 	repositories {
-		maven {
-			url 'http://repo.jruyi.org/maven/releases/'
-		}
+		jcenter()
 	}
 	dependencies {
-		classpath 'org.jruyi:thrift-gradle-plugin:0.1.0'
+		classpath 'org.jruyi.gradle:thrift-gradle-plugin:0.2.0'
 	}
 }
 
-apply plugin: 'thrift'
+apply plugin: 'org.jruyi.thrift'
 ```
 
 ### Implicitly Applied Plugins

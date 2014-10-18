@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.jruyi.thrift.gradle.plugin
+package org.jruyi.gradle.thrift.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

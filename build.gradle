@@ -12,17 +12,23 @@
  * limitations under the License.
  */
 
-apply plugin: 'groovy'
-apply plugin: 'maven'
-
-group = 'org.jruyi'
-archivesBaseName = 'thrift-gradle-plugin'
-version = '0.1.0'
-description = 'A gradle plugin for compiling Thrift IDL files using thrift compiler'
-
-repositories {
-	mavenCentral()
+buildscript {
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6"
+	}
 }
+
+apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+group = 'org.jruyi.gradle'
+archivesBaseName = 'thrift-gradle-plugin'
+version = '0.2.0-SNAPSHOT'
+description = 'A gradle plugin for compiling Thrift IDL files using thrift compiler'
 
 ext {
 	title = 'Thrift Gradle Plugin'
@@ -74,32 +80,57 @@ jar {
 	}
 }
 
-uploadArchives {
-	repositories {
-		mavenDeployer {
-			repository(url: jruyiRepo)
-			pom {
-				name = title
-			}
-			pom.project {
-				url = organizationUrl
-				description = project.description
-				organization {
-					name = organizationName
-					url = organizationUrl
-				}
-				licenses {
-					license {
-						name licenseName
-						url licenseUrl
-						distribution 'repo'
-					}
-				}
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+
+			artifactId archivesBaseName
+
+			from components.java
+
+			pom.withXml {
+				def projectNode = asNode()
+				projectNode.appendNode('name', title)
+				projectNode.appendNode('description', description)
+				projectNode.appendNode('url', organizationUrl)
+
+				def organizationNode = projectNode.appendNode('organization')
+				organizationNode.appendNode('name', organizationName)
+				organizationNode.appendNode('url', organizationUrl)
+
+				def licenseNode = projectNode.appendNode('licenses').appendNode('license')
+				licenseNode.appendNode('name', licenseName)
+				licenseNode.appendNode('url', licenseUrl)
+				licenseNode.appendNode('distribution', 'repo')
 			}
 		}
 	}
 }
 
+bintray {
+	user = bintrayUser
+	key = bintrayApiKey
+	publications = ['mavenJava']
+	publish = true
+	pkg {
+		repo = 'maven'
+		userOrg = 'jruyi'
+		name = archivesBaseName
+		desc = description
+		websiteUrl = 'https://github.com/jruyi/thrift-gradle-plugin'
+		issueTrackerUrl = 'https://github.com/jruyi/thrift-gradle-plugin/issues'
+		vcsUrl = 'https://github.com/jruyi/thrift-gradle-plugin.git'
+		licenses = ['Apache-2.0']
+		labels = ['thrift', 'gradle']
+		publicDownloadNumbers = true
+		version {
+			name = project.version
+			vcsTag = "v${project.version}"
+			attributes = ['gradle-plugin': 'org.jruyi.thrift:org.jruyi.gradle:thrift-gradle-plugin']
+		}
+	}
+}
+
 task wrapper(type: Wrapper) {
-	gradleVersion = '2.0'
+	gradleVersion = '2.1'
 }
