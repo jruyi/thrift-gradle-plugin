@@ -27,7 +27,7 @@ apply plugin: 'com.jfrog.bintray'
 
 group = 'org.jruyi.gradle'
 archivesBaseName = 'thrift-gradle-plugin'
-version = '0.2.0-SNAPSHOT'
+version = '0.2.0'
 description = 'A gradle plugin for compiling Thrift IDL files using thrift compiler'
 
 ext {
@@ -80,6 +80,11 @@ jar {
 	}
 }
 
+task sourcesJar(type: Jar) {
+	from sourceSets.main.allSource
+	classifier = 'sources'
+}
+
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
@@ -103,6 +108,8 @@ publishing {
 				licenseNode.appendNode('url', licenseUrl)
 				licenseNode.appendNode('distribution', 'repo')
 			}
+
+			artifact sourcesJar
 		}
 	}
 }
