@@ -156,16 +156,11 @@ class CompileThrift extends DefaultTask {
 		if (debug) cmdLine << '-debug'
 		cmdLine << source
 
-		String command = cmdLine.join(' ')
-		project.logger.info(command)
-		Process p = command.execute()
-		if (project.logger.quietEnabled) {
-			p.consumeProcessOutput()
-			p.waitFor()
-		} else
-			p.waitForProcessOutput(System.out, System.err)
+		def result = project.exec {
+			commandLine cmdLine
+		}
 
-		int exitCode = p.exitValue();
+		def exitCode = result.exitValue
 		if (exitCode != 0)
 			throw new GradleException("Failed to compile ${source}, exit=${exitCode}")
 	}
