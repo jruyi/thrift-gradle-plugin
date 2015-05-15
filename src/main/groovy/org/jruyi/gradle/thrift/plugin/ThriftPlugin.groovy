@@ -16,8 +16,6 @@ package org.jruyi.gradle.thrift.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.plugins.JavaPlugin
 
 class ThriftPlugin implements Plugin<Project> {
 
@@ -27,30 +25,10 @@ class ThriftPlugin implements Plugin<Project> {
 	void apply(Project project) {
 
 		def srcDir = 'src/main/thrift'
-		def dstDir = new File(project.buildDir, 'generated-sources/thrift')
+		def dstDir = "${project.buildDir}/generated-sources/thrift"
 
 		CompileThrift compileThrift = project.tasks.create(COMPILE_THRIFT_TASK, CompileThrift)
 		compileThrift.sourceDir(srcDir)
 		compileThrift.outputDir(dstDir)
-
-		if (project.plugins.hasPlugin('java'))
-			makeAsDependency(project, compileThrift)
-		else {
-			project.plugins.whenPluginAdded { plugin ->
-				if (plugin instanceof JavaPlugin)
-					makeAsDependency(project, compileThrift)
-			}
-		}
-	}
-
-	private void makeAsDependency(Project project, CompileThrift compileThrift) {
-		Task compileJava = project.tasks.getByName(JavaPlugin.COMPILE_JAVA_TASK_NAME);
-		if (compileJava == null)
-			return;
-
-		compileThrift.generators['java'] = ''
-		def genJava = new File(compileThrift.outputDir, 'gen-java').canonicalFile
-		project.sourceSets.main.java.srcDir genJava.absolutePath
-		compileJava.dependsOn compileThrift
 	}
 }

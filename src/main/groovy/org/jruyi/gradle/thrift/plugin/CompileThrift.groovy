@@ -16,6 +16,8 @@ package org.jruyi.gradle.thrift.plugin
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.Task
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.OutputDirectory
@@ -25,19 +27,19 @@ import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 class CompileThrift extends DefaultTask {
 
 	@InputDirectory
-	File sourceDir
+	private File sourceDir
 
 	@OutputDirectory
-	File outputDir
+	private File outputDir
 
 	@Input
-	Set<File> includeDirs = []
+	private Set<File> includeDirs = []
 
 	@Input
-	String thriftExecutable = 'thrift'
+	private String thriftExecutable = 'thrift'
 
 	@Input
-	final Map<String, String> generators = new LinkedHashMap<>()
+	private final Map<String, String> generators = new LinkedHashMap<>()
 
 	@Input
 	boolean recurse
@@ -53,31 +55,36 @@ class CompileThrift extends DefaultTask {
 	boolean verbose
 	boolean debug
 
-	def sourceDir(String sourceDirPath) {
-		sourceDir = project.file(sourceDirPath).canonicalFile
+	private boolean createGenFolder = true
+
+	def thriftExecutable(Object thriftExecutable) {
+		this.thriftExecutable = String.valueOf(thriftExecutable)
 	}
 
-	def sourceDir(File sourceDir) {
+	def sourceDir(Object sourceDir) {
+		if (!(sourceDir instanceof File))
+			sourceDir = project.file(sourceDir)
 		this.sourceDir = sourceDir
 	}
 
-	def outputDir(String outputDirPath) {
-		outputDir = project.file(outputDirPath).canonicalFile
-	}
-
-	def outputDir(File outputDir) {
+	def outputDir(Object outputDir) {
+		if (!(outputDir instanceof File))
+			outputDir = project.file(outputDir)
+		if (this.outputDir == outputDir)
+			return
+		def oldOutputDir = currentOutputDir()
 		this.outputDir = outputDir
+		addSourceDir(oldOutputDir)
 	}
 
-	def includeDir(File includeDir) {
+	def includeDir(Object includeDir) {
+		if (!(includeDir instanceof File))
+			includeDir = project.file(includeDir)
+
 		includeDirs << includeDir
 	}
 
-	def includeDir(String includeDir) {
-		includeDirs << project.file(includeDir).canonicalFile
-	}
-
-	def generator(String gen, String... args) {
+	def generator(Object gen, Object... args) {
 		String options
 		if (args == null || args.length < 1)
 			options = ''
@@ -87,7 +94,15 @@ class CompileThrift extends DefaultTask {
 				args[i] = args[i].trim()
 			options = args.join(',')
 		}
-		generators.put(gen.trim(), options)
+		generators.put(String.valueOf(gen).trim(), options)
+	}
+
+	def createGenFolder(boolean createGenFolder) {
+		if (this.createGenFolder == createGenFolder)
+			return
+		def oldOutputDir = currentOutputDir()
+		this.createGenFolder = createGenFolder
+		addSourceDir(oldOutputDir)
 	}
 
 	@TaskAction
@@ -136,7 +151,7 @@ class CompileThrift extends DefaultTask {
 	}
 
 	def compile(String source) {
-		def cmdLine = [thriftExecutable, '-o', outputDir.absolutePath]
+		def cmdLine = [thriftExecutable, createGenFolder ? '-o' : '-out', outputDir.absolutePath]
 		generators.each { generator ->
 			cmdLine << '--gen'
 			String cmd = generator.key.trim()
@@ -163,5 +178,42 @@ class CompileThrift extends DefaultTask {
 		def exitCode = result.exitValue
 		if (exitCode != 0)
 			throw new GradleException("Failed to compile ${source}, exit=${exitCode}")
+	}
+
+	private def addSourceDir(File oldOutputDir) {
+		if (project.plugins.hasPlugin('java'))
+			makeAsDependency(oldOutputDir)
+		else {
+			project.plugins.whenPluginAdded { plugin ->
+				if (plugin instanceof JavaPlugin)
+					makeAsDependency(oldOutputDir)
+			}
+		}
+	}
+
+	private def makeAsDependency(oldOutputDir) {
+		Task compileJava = project.tasks.getByName(JavaPlugin.COMPILE_JAVA_TASK_NAME);
+		if (compileJava == null)
+			return
+
+		generators['java'] = ''
+		def genJava = currentOutputDir().canonicalFile
+		if (genJava == oldOutputDir)
+			return
+
+		if (oldOutputDir != null)
+			project.sourceSets.main.java.srcDirs -= oldOutputDir
+		project.sourceSets.main.java.srcDir genJava.absolutePath
+
+		compileJava.dependsOn this
+	}
+
+	private def currentOutputDir() {
+		def currentOutputDir = outputDir
+		if (currentOutputDir == null)
+			return null
+		if (createGenFolder)
+			currentOutputDir = new File(currentOutputDir, 'gen-java')
+		return currentOutputDir
 	}
 }
