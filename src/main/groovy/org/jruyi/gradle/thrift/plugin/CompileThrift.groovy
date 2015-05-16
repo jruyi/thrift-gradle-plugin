@@ -42,6 +42,9 @@ class CompileThrift extends DefaultTask {
 	private final Map<String, String> generators = new LinkedHashMap<>()
 
 	@Input
+	private boolean createGenFolder = true
+
+	@Input
 	boolean recurse
 
 	@Input
@@ -54,8 +57,6 @@ class CompileThrift extends DefaultTask {
 	boolean strict
 	boolean verbose
 	boolean debug
-
-	private boolean createGenFolder = true
 
 	def thriftExecutable(Object thriftExecutable) {
 		this.thriftExecutable = String.valueOf(thriftExecutable)
