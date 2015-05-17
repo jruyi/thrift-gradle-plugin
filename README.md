@@ -1,5 +1,7 @@
 ## Thrift Gradle Plugin
 
+[![Build Status](https://travis-ci.org/jruyi/thrift-gradle-plugin.svg?branch=master)](https://travis-ci.org/jruyi/thrift-gradle-plugin)
+
 Thrift Gradle Plugin uses thrift compiler to compile Thrift IDL files.
 
 ### Usage
