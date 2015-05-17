@@ -19,6 +19,6 @@ before_install:
   - sudo apt-get install automake libtool flex bison pkg-config g++
   - wget http://www.us.apache.org/dist/thrift/0.9.2/thrift-0.9.2.tar.gz
   - tar xfz thrift-0.9.2.tar.gz
-  - cd thrift-0.9.2 && ./configure --prefix=/usr/local/ --with-boost=/usr/local --with-libevent=/usr/local --without-gnu-ld --without-cpp --without-qt4 --without-c_glib --without-csharp --without-java --without-erlang --without-python --without-perl --without-php --without-php_extension --without-ruby --without-haskell --without-go --without-d --without-lua && sudo make install
+  - cd thrift-0.9.2 && ./configure --without-gnu-ld --without-cpp --without-qt4 --without-c_glib --without-csharp --without-java --without-nodejs --without-erlang --without-python --without-perl --without-php --without-php_extension --without-ruby --without-haskell --without-go --without-d --without-lua && sudo make install && cd ..
 
 script: ./run-tests.sh

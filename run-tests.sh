@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,8 @@
 # limitations under the License.
 #
 
+set -ev
+
 ./gradlew publishToMavenLocal
-if [ "$?" -ne 0 ]; then exit "$?"; fi
 
 ./gradlew -b test/build.gradle --refresh-dependencies --rerun-tasks clean check
