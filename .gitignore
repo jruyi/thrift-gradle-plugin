@@ -10,5 +10,6 @@
 *.iml
 .gradle
 .nb-gradle
-/build
 
+/build
+/test/build

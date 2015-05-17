@@ -1,0 +1,88 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+buildscript {
+    repositories {
+		mavenLocal()
+    }
+    dependencies {
+        classpath 'org.jruyi.gradle:thrift-gradle-plugin:0.2.1-SNAPSHOT'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.jruyi.thrift'
+
+group = 'org.jruyi.gradle'
+archivesBaseName = 'thrift-gradle-plugin-test'
+version = '0.2.1-SNAPSHOT'
+description = 'Test thrift-gradle-plugin'
+
+ext {
+	title = 'Thrift Gradle Plugin Test'
+	organizationId = 'org.jruyi'
+	organizationName = 'JRuyi.org'
+	organizationUrl = 'http://www.jruyi.org/'
+
+	licenseName = 'Apache License, Version 2.0'
+	licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+
+	createdBy = "${System.getProperty('java.version')} (${System.getProperty('java.vm.vendor')})"
+}
+
+configurations.all {
+    transitive = false
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	compile "org.slf4j:slf4j-api:1.7.12"
+	compile "org.apache.thrift:libthrift:0.9.2"
+}
+
+compileThrift {
+    thriftExecutable "thrift"
+    sourceDir "src/main/thrift"
+    outputDir "$buildDir/gen-src"
+
+    nowarn true
+    strict true
+    verbose true
+	recurse true
+    debug true
+    allowNegKeys true
+    allow64bitsConsts true
+    createGenFolder false
+
+	generator 'java', 'private-members'
+}
+
+jar {
+	manifest {
+		attributes(
+				'Specification-Title': title,
+				'Specification-Version': version,
+				'Specification-Vendor': organizationName,
+				'Implementation-Title': title,
+				'Implementation-Version': version,
+				'Implementation-Vendor': organizationName,
+				'Implementation-Vendor-Id': organizationId,
+				'Implementation-Vendor-URL': organizationUrl,
+				'Created-By': createdBy,
+		)
+	}
+}
