@@ -13,12 +13,12 @@
  */
 
 buildscript {
-    repositories {
+	repositories {
 		mavenLocal()
-    }
-    dependencies {
-        classpath 'org.jruyi.gradle:thrift-gradle-plugin:0.2.1-SNAPSHOT'
-    }
+	}
+	dependencies {
+		classpath 'org.jruyi.gradle:thrift-gradle-plugin:+'
+	}
 }
 
 apply plugin: 'java'
@@ -26,7 +26,7 @@ apply plugin: 'org.jruyi.thrift'
 
 group = 'org.jruyi.gradle'
 archivesBaseName = 'thrift-gradle-plugin-test'
-version = '0.2.1-SNAPSHOT'
+version = '0.3.0'
 description = 'Test thrift-gradle-plugin'
 
 ext {
@@ -42,11 +42,11 @@ ext {
 }
 
 configurations.all {
-    transitive = false
+	transitive = false
 }
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
@@ -55,18 +55,18 @@ dependencies {
 }
 
 compileThrift {
-    thriftExecutable "thrift"
-    sourceDir "src/main/thrift"
-    outputDir "$buildDir/gen-src"
+	thriftExecutable "thrift"
+	sourceDir "src/main/thrift"
+	outputDir "$buildDir/gen-src"
 
-    nowarn true
-    strict true
-    verbose true
+	nowarn true
+	strict true
+	verbose true
 	recurse true
-    debug true
-    allowNegKeys true
-    allow64bitsConsts true
-    createGenFolder false
+	debug true
+	allowNegKeys true
+	allow64bitsConsts true
+	createGenFolder false
 
 	generator 'java', 'private-members'
 }

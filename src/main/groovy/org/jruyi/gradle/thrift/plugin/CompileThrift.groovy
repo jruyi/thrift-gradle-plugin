@@ -27,22 +27,22 @@ import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 class CompileThrift extends DefaultTask {
 
 	@InputDirectory
-	private File sourceDir
+	File sourceDir
 
 	@OutputDirectory
-	private File outputDir
+	File outputDir
 
 	@Input
-	private Set<File> includeDirs = []
+	Set<File> includeDirs = []
 
 	@Input
-	private String thriftExecutable = 'thrift'
+	String thriftExecutable = 'thrift'
 
 	@Input
-	private final Map<String, String> generators = new LinkedHashMap<>()
+	final Map<String, String> generators = new LinkedHashMap<>()
 
 	@Input
-	private boolean createGenFolder = true
+	boolean createGenFolder = true
 
 	@Input
 	boolean recurse

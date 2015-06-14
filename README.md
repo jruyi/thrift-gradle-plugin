@@ -1,8 +1,8 @@
-## Thrift Gradle Plugin
+## Gradle Thrift Plugin
 
 [![Build Status](https://travis-ci.org/jruyi/thrift-gradle-plugin.svg?branch=master)](https://travis-ci.org/jruyi/thrift-gradle-plugin)
 
-Thrift Gradle Plugin uses thrift compiler to compile Thrift IDL files.
+Gradle Thrift Plugin uses thrift compiler to compile Thrift IDL files.
 
 ### Usage
 To use this plugin, add the following to your build script.
@@ -10,14 +10,24 @@ To use this plugin, add the following to your build script.
 ```groovy
 buildscript {
 	repositories {
-		jcenter()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
 	}
 	dependencies {
-		classpath 'org.jruyi.gradle:thrift-gradle-plugin:0.2.0'
+		classpath "gradle.plugin.org.jruyi.gradle:thrift-gradle-plugin:0.3.0"
 	}
 }
 
-apply plugin: 'org.jruyi.thrift'
+apply plugin: "org.jruyi.thrift"
+```
+
+Or for gradle 2.1+
+
+```groovy
+plugins {
+	id "org.jruyi.thrift" version "0.3.0"
+}
 ```
 
 ### Implicitly Applied Plugins
@@ -44,13 +54,16 @@ recurse           | boolean             | false
 debug             | boolean             | false
 allowNegKeys      | boolean             | false
 allow64bitsConsts | boolean             | false
+createGenFolder   | boolean             | true
+
+If createGenFolder is set to false, no gen-* folder will be created.
 
 ##### Example
 
 ```groovy
 compileThrift {
 	recurse true
-	
+
 	generator 'html'
 	generator 'java', 'private-members'
 }
@@ -62,4 +75,4 @@ When JavaPlugin is applied, generator 'java' will be created and the generated j
 
 ## License
 
-Thrift Gradle Plugin is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
+Gradle Thrift Plugin is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).

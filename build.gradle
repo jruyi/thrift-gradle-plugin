@@ -13,7 +13,7 @@
  */
 
 plugins {
-	id 'com.jfrog.bintray' version '1.2'
+	id 'com.gradle.plugin-publish' version '0.9.0'
 }
 
 apply plugin: 'groovy'
@@ -21,11 +21,11 @@ apply plugin: 'maven-publish'
 
 group = 'org.jruyi.gradle'
 archivesBaseName = 'thrift-gradle-plugin'
-version = '0.2.1-SNAPSHOT'
+version = '0.3.0'
 description = 'A gradle plugin for compiling Thrift IDL files using thrift compiler'
 
 ext {
-	title = 'Thrift Gradle Plugin'
+	title = 'Gradle Thrift Plugin'
 	organizationId = 'org.jruyi'
 	organizationName = 'JRuyi.org'
 	organizationUrl = 'http://www.jruyi.org/'
@@ -74,11 +74,6 @@ jar {
 	}
 }
 
-task sourcesJar(type: Jar) {
-	from sourceSets.main.allSource
-	classifier = 'sources'
-}
-
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
@@ -91,7 +86,6 @@ publishing {
 				def projectNode = asNode()
 				projectNode.appendNode('name', title)
 				projectNode.appendNode('description', description)
-				projectNode.appendNode('url', organizationUrl)
 
 				def organizationNode = projectNode.appendNode('organization')
 				organizationNode.appendNode('name', organizationName)
@@ -102,32 +96,20 @@ publishing {
 				licenseNode.appendNode('url', licenseUrl)
 				licenseNode.appendNode('distribution', 'repo')
 			}
-
-			artifact sourcesJar
 		}
 	}
 }
 
-bintray {
-	user = bintrayUser
-	key = bintrayApiKey
-	publications = ['mavenJava']
-	publish = true
-	pkg {
-		repo = 'maven'
-		userOrg = 'jruyi'
-		name = archivesBaseName
-		desc = description
-		websiteUrl = 'https://github.com/jruyi/thrift-gradle-plugin'
-		issueTrackerUrl = 'https://github.com/jruyi/thrift-gradle-plugin/issues'
-		vcsUrl = 'https://github.com/jruyi/thrift-gradle-plugin.git'
-		licenses = ['Apache-2.0']
-		labels = ['thrift', 'gradle', 'plugin']
-		publicDownloadNumbers = true
-		version {
-			name = project.version
-			vcsTag = "v${project.version}"
-			attributes = ['gradle-plugin': 'org.jruyi.thrift:org.jruyi.gradle:thrift-gradle-plugin']
+pluginBundle {
+	website = 'https://github.com/jruyi/thrift-gradle-plugin'
+	vcsUrl = 'https://github.com/jruyi/thrift-gradle-plugin.git'
+	description = project.description
+	tags = ['thrift']
+
+	plugins {
+		thriftPlugin {
+			id = 'org.jruyi.thrift'
+			displayName = title
 		}
 	}
 }

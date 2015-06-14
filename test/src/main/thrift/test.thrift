@@ -15,9 +15,9 @@
 namespace java org.jruyi.gradle.thrift.plugin.test
 
 struct TestStruct {
-    1:required i32 num = 0,
+	1:required i32 num = 0,
 }
 
 service TestService {
-    void test(1:TestStruct testStruct),
+	void test(1:TestStruct testStruct),
 }
