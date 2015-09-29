@@ -13,7 +13,7 @@
  */
 
 plugins {
-	id 'com.gradle.plugin-publish' version '0.9.0'
+	id 'com.gradle.plugin-publish' version '0.9.1'
 }
 
 apply plugin: 'groovy'
@@ -21,7 +21,7 @@ apply plugin: 'maven-publish'
 
 group = 'org.jruyi.gradle'
 archivesBaseName = 'thrift-gradle-plugin'
-version = '0.3.0'
+version = '0.3.1'
 description = 'A gradle plugin for compiling Thrift IDL files using thrift compiler'
 
 ext {

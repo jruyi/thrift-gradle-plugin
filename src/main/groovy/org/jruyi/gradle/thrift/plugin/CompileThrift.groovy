@@ -181,18 +181,7 @@ class CompileThrift extends DefaultTask {
 			throw new GradleException("Failed to compile ${source}, exit=${exitCode}")
 	}
 
-	private def addSourceDir(File oldOutputDir) {
-		if (project.plugins.hasPlugin('java'))
-			makeAsDependency(oldOutputDir)
-		else {
-			project.plugins.whenPluginAdded { plugin ->
-				if (plugin instanceof JavaPlugin)
-					makeAsDependency(oldOutputDir)
-			}
-		}
-	}
-
-	private def makeAsDependency(oldOutputDir) {
+	def makeAsDependency(File oldOutputDir) {
 		Task compileJava = project.tasks.getByName(JavaPlugin.COMPILE_JAVA_TASK_NAME);
 		if (compileJava == null)
 			return
@@ -207,6 +196,17 @@ class CompileThrift extends DefaultTask {
 		project.sourceSets.main.java.srcDir genJava.absolutePath
 
 		compileJava.dependsOn this
+	}
+
+	private def addSourceDir(File oldOutputDir) {
+		if (project.plugins.hasPlugin('java'))
+			makeAsDependency(oldOutputDir)
+		else {
+			project.plugins.whenPluginAdded { plugin ->
+				if (plugin instanceof JavaPlugin)
+					makeAsDependency(oldOutputDir)
+			}
+		}
 	}
 
 	private def currentOutputDir() {
