@@ -26,7 +26,7 @@ apply plugin: 'org.jruyi.thrift'
 
 group = 'org.jruyi.gradle'
 archivesBaseName = 'thrift-gradle-plugin-test'
-version = '0.3.0'
+version = '0.3.1'
 description = 'Test thrift-gradle-plugin'
 
 ext {
@@ -50,8 +50,8 @@ repositories {
 }
 
 dependencies {
-	compile "org.slf4j:slf4j-api:1.7.12"
-	compile "org.apache.thrift:libthrift:0.9.2"
+	compile "org.slf4j:slf4j-api:1.7.20"
+	compile "org.apache.thrift:libthrift:0.9.3"
 }
 
 compileThrift {
