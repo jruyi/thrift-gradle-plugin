@@ -116,7 +116,8 @@ class CompileThrift extends DefaultTask {
 
 		List<File> changedFiles = []
 		inputs.outOfDate { change ->
-			changedFiles.add(change.file)
+			if (change.file.name.endsWith('.thrift'))
+                changedFiles.add(change.file)
 		}
 
 		boolean removed = false
