@@ -5,6 +5,7 @@
 Gradle Thrift Plugin uses thrift compiler to compile Thrift IDL files.
 
 ### Usage
+
 To use this plugin, add the following to your build script.
 
 ```groovy
@@ -22,13 +23,17 @@ buildscript {
 apply plugin: "org.jruyi.thrift"
 ```
 
-Or for gradle 2.1+
+Or for Gradle 2.1+:
 
 ```groovy
 plugins {
 	id "org.jruyi.thrift" version "0.3.1"
 }
 ```
+
+### Example
+
+See the `examples/test2` directory for a very simple example.
 
 ### Implicitly Applied Plugins
 
@@ -71,7 +76,7 @@ compileThrift {
 
 ### Default Behaviors
 
-When JavaPlugin is applied, generator 'java' will be created and the generated java code will be added to java source automatically.
+When JavaPlugin is applied, generator 'java' will be created and the generated java code will be added to Java source automatically.
 
 ## License
 
