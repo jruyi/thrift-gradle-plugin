@@ -13,7 +13,7 @@
  */
 
 plugins {
-	id 'com.gradle.plugin-publish' version '0.9.4'
+	id 'com.gradle.plugin-publish' version '0.9.6'
 }
 
 apply plugin: 'groovy'
@@ -132,3 +132,4 @@ pluginBundle {
 		}
 	}
 }
+
