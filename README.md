@@ -73,6 +73,21 @@ compileThrift {
 
 When JavaPlugin is applied, generator 'java' will be created and the generated java code will be added to java source automatically.
 
+## Using Thrift on Travis
+
+Ubuntu 14.04 (Trusty) provides [Thrift 0.9.0](http://packages.ubuntu.com/trusty/devel/thrift-compiler). If this version fits your requirements, you can use the following `.travis.yml` configuration file:
+
+```
+language: java
+dist: trusty
+sudo: required
+before_install:
+  - sudo apt-get install thrift-compiler
+script:
+  - ./gradlew check
+  - ./gradlew assemble
+```
+
 ## License
 
 Gradle Thrift Plugin is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
