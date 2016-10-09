@@ -21,7 +21,7 @@ apply plugin: 'maven-publish'
 
 group = 'org.jruyi.gradle'
 archivesBaseName = 'thrift-gradle-plugin'
-version = '0.3.2-SNAPSHOT'
+version = '0.3.2'
 description = 'A gradle plugin for compiling Thrift IDL files using thrift compiler'
 
 ext {
@@ -120,9 +120,9 @@ publishing {
 }
 
 pluginBundle {
-	website = websiteUrl
-	vcsUrl = vcsUrl
-	description = project.description
+	website = "$websiteUrl"
+	vcsUrl = "$vcsUrl"
+	description = "${project.description}"
 	tags = ['thrift']
 
 	plugins {
