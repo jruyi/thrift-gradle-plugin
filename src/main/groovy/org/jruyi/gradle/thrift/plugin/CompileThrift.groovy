@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *	 http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,15 +19,15 @@ import org.gradle.api.GradleException
 import org.gradle.api.Task
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 
 class CompileThrift extends DefaultTask {
 
-	@InputDirectory
-	File sourceDir
+	@InputFiles
+	Set<File> sourceItems = []
 
 	@OutputDirectory
 	File outputDir
@@ -63,9 +63,13 @@ class CompileThrift extends DefaultTask {
 	}
 
 	def sourceDir(Object sourceDir) {
-		if (!(sourceDir instanceof File))
-			sourceDir = project.file(sourceDir)
-		this.sourceDir = sourceDir
+		sourceItems(sourceDir)
+	}
+
+	def sourceItems(Object... sourceItems) {
+		sourceItems.each { sourceItem ->
+			this.sourceItems.add(convertToFile(sourceItem))
+		}
 	}
 
 	def outputDir(Object outputDir) {
@@ -117,7 +121,7 @@ class CompileThrift extends DefaultTask {
 		List<File> changedFiles = []
 		inputs.outOfDate { change ->
 			if (change.file.name.endsWith('.thrift'))
-                changedFiles.add(change.file)
+				changedFiles.add(change.file)
 		}
 
 		boolean removed = false
@@ -145,10 +149,29 @@ class CompileThrift extends DefaultTask {
 		if (!outputDir.mkdirs())
 			throw new GradleException("Could not create thrift output directory: ${outputDir.absolutePath}")
 
-		project.fileTree(sourceDir.canonicalPath) {
-			include '**/*.thrift'
-		}.each { it ->
-			compile(it.absolutePath)
+		// expand all items.
+		Set<String> resolvedSourceItems = []
+		sourceItems.each {
+			sourceItem -> if(sourceItem.file) {
+				resolvedSourceItems.add(sourceItem.absolutePath)
+			} else if (sourceItem.directory) {
+				project.fileTree(sourceItem.canonicalPath) {
+					include '**/*.thrift'
+				}.each { foundItem ->
+					resolvedSourceItems.add(foundItem.absolutePath)
+				}
+
+			} else if (!sourceItem.exists()) {
+				logger.warn("Could not find {}. Will ignore it", sourceItem)
+			} else {
+				logger.warn("Unable to handle {}. Will ignore it", sourceItem)
+			}
+		}
+
+		logger.info("Items to be generated for: {}", resolvedSourceItems)
+
+		resolvedSourceItems.each {
+			compile(it)
 		}
 	}
 
@@ -208,6 +231,19 @@ class CompileThrift extends DefaultTask {
 					makeAsDependency(oldOutputDir)
 			}
 		}
+	}
+
+	def convertToFile(Object item) {
+		if (item instanceof File) {
+			return item
+		}
+
+		def result = new File(item.toString());
+		if(result.exists()) {
+			return result;
+		}
+
+		project.file(item)
 	}
 
 	private def currentOutputDir() {
