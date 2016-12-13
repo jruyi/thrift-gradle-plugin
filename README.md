@@ -27,7 +27,7 @@ Or for Gradle 2.1+:
 
 ```groovy
 plugins {
-	id "org.jruyi.thrift" version "0.3.2"
+	id "org.jruyi.thrift" version "0.3.3"
 }
 ```
 
@@ -49,6 +49,7 @@ Task Property     | Type                | Default Value
 ------------------|---------------------|---------------------------------------------------
 thriftExecutable  | String              | thrift
 sourceDir         | File                | src/main/thrift
+sourceItems       | Object...           | src/main/thrift
 outputDir         | File                | _buildDir_/generated-sources/thrift
 includeDirs       | Set<File>           | []
 generators        | Map<String, String> | ['java':''] if JavaPlugin is applied, otherwise []
@@ -62,6 +63,12 @@ allow64bitsConsts | boolean             | false
 createGenFolder   | boolean             | true
 
 If createGenFolder is set to false, no gen-* folder will be created.
+
+sourceDir is only used for backward compatibility
+
+sourceItems are a set of sources, which will be used for generating java files from thrift.
+A source can either be a path specified as a string or a file. In case a source is a relative path the source will be relative to _srcDir_. 
+In case a source is a directory, the directory will be scanned recursively for *.thrift files and used.   
 
 ##### Example
 
