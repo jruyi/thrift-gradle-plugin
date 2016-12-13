@@ -16,7 +16,7 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath "gradle.plugin.org.jruyi.gradle:thrift-gradle-plugin:0.3.2"
+		classpath "gradle.plugin.org.jruyi.gradle:thrift-gradle-plugin:0.4.0"
 	}
 }
 
@@ -27,7 +27,7 @@ Or for Gradle 2.1+:
 
 ```groovy
 plugins {
-	id "org.jruyi.thrift" version "0.3.3"
+	id "org.jruyi.thrift" version "0.4.0"
 }
 ```
 
