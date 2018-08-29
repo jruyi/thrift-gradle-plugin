@@ -26,7 +26,7 @@ apply plugin: 'org.jruyi.thrift'
 
 group = 'org.jruyi.gradle'
 archivesBaseName = 'thrift-gradle-plugin-test'
-version = '0.3.1'
+version = '0.4.0'
 description = 'Test thrift-gradle-plugin'
 
 ext {
@@ -56,7 +56,7 @@ dependencies {
 
 compileThrift {
 	thriftExecutable "thrift"
-	sourceDir "src/main/thrift"
+	sourceDir "$projectDir/src/main/thrift"
 	outputDir "$buildDir/gen-src"
 
 	nowarn true
