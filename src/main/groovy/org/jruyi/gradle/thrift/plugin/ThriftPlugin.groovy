@@ -24,7 +24,7 @@ class ThriftPlugin implements Plugin<Project> {
 	@Override
 	void apply(Project project) {
 
-		def srcDir = 'src/main/thrift'
+		def srcDir = "${project.projectDir}/src/main/thrift"
 		def dstDir = "${project.buildDir}/generated-sources/thrift"
 
 		CompileThrift compileThrift = project.tasks.create(COMPILE_THRIFT_TASK, CompileThrift)
