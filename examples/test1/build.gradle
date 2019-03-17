@@ -26,7 +26,7 @@ apply plugin: 'org.jruyi.thrift'
 
 group = 'org.jruyi.gradle'
 archivesBaseName = 'thrift-gradle-plugin-test'
-version = '0.4.0'
+version = '0.4.1'
 description = 'Test thrift-gradle-plugin'
 
 ext {
