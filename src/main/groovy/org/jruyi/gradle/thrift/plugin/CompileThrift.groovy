@@ -67,6 +67,7 @@ class CompileThrift extends DefaultTask {
 	}
 
 	def sourceItems(Object... sourceItems) {
+		this.sourceItems.clear()
 		sourceItems.each { sourceItem ->
 			this.sourceItems.add(convertToFile(sourceItem))
 		}
