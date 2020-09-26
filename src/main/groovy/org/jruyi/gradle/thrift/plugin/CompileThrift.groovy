@@ -53,9 +53,16 @@ class CompileThrift extends DefaultTask {
 	@Input
 	boolean allow64bitsConsts
 
+	@Input
 	boolean nowarn
+
+	@Input
 	boolean strict
+
+	@Input
 	boolean verbose
+
+	@Input
 	boolean debug
 
 	def thriftExecutable(Object thriftExecutable) {
