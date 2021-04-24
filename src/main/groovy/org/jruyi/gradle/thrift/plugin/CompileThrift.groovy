@@ -20,6 +20,7 @@ import org.gradle.api.Task
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
@@ -53,9 +54,16 @@ class CompileThrift extends DefaultTask {
 	@Input
 	boolean allow64bitsConsts
 
+	@Internal
 	boolean nowarn
+
+	@Internal
 	boolean strict
+
+	@Internal
 	boolean verbose
+
+	@Internal
 	boolean debug
 
 	def thriftExecutable(Object thriftExecutable) {
