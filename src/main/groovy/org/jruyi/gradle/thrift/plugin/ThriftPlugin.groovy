@@ -30,5 +30,15 @@ class ThriftPlugin implements Plugin<Project> {
 		CompileThrift compileThrift = project.tasks.create(COMPILE_THRIFT_TASK, CompileThrift)
 		compileThrift.sourceDir(srcDir)
 		compileThrift.outputDir(dstDir)
+		project.configure(project) {
+			sourceSets {
+				main {
+					resources {
+						srcDirs srcDir
+						include '**/*.thrift'
+					}
+				}
+			}
+		}
 	}
 }

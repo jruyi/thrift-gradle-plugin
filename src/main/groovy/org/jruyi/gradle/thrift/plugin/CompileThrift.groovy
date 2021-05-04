@@ -25,6 +25,8 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 
+import java.nio.file.Paths
+
 class CompileThrift extends DefaultTask {
 
 	@InputFiles
@@ -37,7 +39,13 @@ class CompileThrift extends DefaultTask {
 	Set<File> includeDirs = []
 
 	@Input
+	Set<String> configurations = []
+
+	@Input
 	String thriftExecutable = 'thrift'
+
+	@Input
+	String tmpInBuildDir = 'thriftTmp'
 
 	@Input
 	final Map<String, String> generators = new LinkedHashMap<>()
@@ -90,11 +98,23 @@ class CompileThrift extends DefaultTask {
 		addSourceDir(oldOutputDir)
 	}
 
+	def tmpDir() {
+		project.getBuildDir().toPath().resolve(Paths.get(tmpInBuildDir)).toFile()
+	}
+
 	def includeDir(Object includeDir) {
 		if (!(includeDir instanceof File))
 			includeDir = project.file(includeDir)
 
 		includeDirs << includeDir
+	}
+
+	def configuration(Object configuration) {
+		if (!configurations.contains(configuration)) {
+			String confAsString = (String) configuration
+			configurations << confAsString
+			this.dependsOn(project.configurations.getByName(confAsString))
+		}
 	}
 
 	def generator(Object gen, Object... args) {
@@ -120,7 +140,9 @@ class CompileThrift extends DefaultTask {
 
 	@TaskAction
 	def compileThrift(IncrementalTaskInputs inputs) {
-
+		extractThriftFilesInJars().each {
+			includeDir(it)
+		}
 		if (!inputs.incremental) {
 			compileAll()
 			return
@@ -148,6 +170,26 @@ class CompileThrift extends DefaultTask {
 		changedFiles.each { changedFile ->
 			compile(changedFile.absolutePath)
 		}
+	}
+
+	/**
+	 * Extract thrift files present in the jars of the configurations into a hierarchy inside tmpDir.
+	 * @return the list of directories where thrift files were extracted.
+	 */
+	List<File> extractThriftFilesInJars() {
+		def res = []
+		def currTmpDir = tmpDir()
+		for (String configuration: configurations) {
+			List<File> files = project.configurations.getByName(configuration).findAll {
+				it instanceof File
+			}.collect {
+				(File) it
+			}
+			ExtractJarFromConfiguration.makeThriftPathFromJars(currTmpDir, files, logger).each {
+				res << it
+			}
+		}
+		res
 	}
 
 	def compileAll() {
