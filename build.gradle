@@ -45,8 +45,8 @@ configurations.all {
 }
 
 dependencies {
-	compile gradleApi()
-	compile localGroovy()
+	api gradleApi()
+	api localGroovy()
 }
 
 processResources {
@@ -66,10 +66,10 @@ jar {
 	manifest {
 		attributes(
 				'Specification-Title': title,
-				'Specification-Version': version,
+				'Specification-Version': archiveVersion,
 				'Specification-Vendor': organizationName,
 				'Implementation-Title': title,
-				'Implementation-Version': version,
+				'Implementation-Version': archiveVersion,
 				'Implementation-Vendor': organizationName,
 				'Implementation-Vendor-Id': organizationId,
 				'Implementation-Vendor-URL': organizationUrl,
