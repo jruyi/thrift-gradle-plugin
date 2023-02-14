@@ -23,7 +23,7 @@ import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.incremental.IncrementalTaskInputs
+import org.gradle.work.InputChanges
 
 class CompileThrift extends DefaultTask {
 
@@ -119,7 +119,7 @@ class CompileThrift extends DefaultTask {
 	}
 
 	@TaskAction
-	def compileThrift(IncrementalTaskInputs inputs) {
+	def compileThrift(InputChanges inputs) {
 
 		if (!inputs.incremental) {
 			compileAll()

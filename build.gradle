@@ -13,7 +13,7 @@
  */
 
 plugins {
-	id 'com.gradle.plugin-publish' version '0.14.0'
+	id 'com.gradle.plugin-publish' version '1.1.0'
 }
 
 apply plugin: 'groovy'
@@ -45,12 +45,11 @@ configurations.all {
 }
 
 dependencies {
-	api gradleApi()
-	api localGroovy()
+	implementation gradleApi()
+	implementation localGroovy()
 }
 
 processResources {
-
 	from(['LICENSE', 'NOTICE']) {
 		into 'META-INF'
 	}
@@ -112,16 +111,17 @@ publishing {
 	}
 }
 
-pluginBundle {
+gradlePlugin {
 	website = 'https://github.com/jruyi/thrift-gradle-plugin'
 	vcsUrl = 'https://github.com/jruyi/thrift-gradle-plugin.git'
 	description = "${project.description}"
-	tags = ['thrift']
 
 	plugins {
 		thriftPlugin {
 			id = 'org.jruyi.thrift'
 			displayName = title
+			tags.set(['thrift'])
+			implementationClass = 'org.jruyi.gradle.thrift.plugin.ThriftPlugin'
 		}
 	}
 }
